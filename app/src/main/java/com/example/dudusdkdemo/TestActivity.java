@@ -246,6 +246,7 @@ public class TestActivity extends Activity {
         });
         return null;
     }
+
     public DuduUser getUser(String uid, String diviceId) {
         DuduUser user = new DuduUser();
         user.setUserid(uid);
