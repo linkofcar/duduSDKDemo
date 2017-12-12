@@ -1,7 +1,5 @@
 package com.czl.chatClient.bean;
 
-import android.provider.SyncStateContract;
-
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 
