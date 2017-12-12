@@ -40,7 +40,7 @@ public class StringUtils {
 	}
 
 	public static String getRandomString(int length) { // length表示生成字符串的长度
-	    String base = "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+		String base = "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 		Random random = new Random();
 		StringBuffer sb = new StringBuffer();
 		for (int i = 0; i < length; i++) {
@@ -61,6 +61,21 @@ public class StringUtils {
 		} else {
 			return null;
 		}
+	}
+
+	/**
+	 * 关键字转义
+	 * @param queryKey
+	 * @param oldkey
+	 * @param newkey
+	 * @return
+	 */
+
+	public static String getFormatString(String queryKey,String oldkey,String newkey) {
+		if(isEmpty(queryKey)){
+			return queryKey;
+		}
+		return queryKey.replace(oldkey, newkey);
 	}
 
 }

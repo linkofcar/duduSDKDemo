@@ -30,8 +30,7 @@ public abstract class GroupHandler implements GroupLienster {
 		// TODO Auto-generated method stub
 		// TODO Auto-generated method stub
 		try {
-			String data = new String(message.getContent(), "UTF-8");
-			String[] splits = data.split("\\|");
+			String[] splits = message.getFormatStrings();;
 			switch (AppServerType.ofCommand(message.getHeader())) {
 			case GT:
 				DuduUser etuser = (DuduUser) parser.parseObject(splits[0],

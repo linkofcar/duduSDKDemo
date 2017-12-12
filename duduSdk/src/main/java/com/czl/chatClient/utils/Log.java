@@ -20,8 +20,7 @@ public class Log
         try
         {
             String uid = "";
-            String content = new String(msg.getContent(),
-                    Constants.CONTENT_CHAR_SET);
+            String content = msg.getFormatString();
             if (msg.getFromUerId() != null)
             {
                 uid = new String(msg.getFromUerId(),

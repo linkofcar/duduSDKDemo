@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.czl.chatClient.Constants;
 import com.czl.chatClient.DuduClient;
 import com.czl.chatClient.DuduSDK;
 import com.czl.chatClient.bean.DuduUser;
@@ -47,7 +48,7 @@ public class TestActivity extends Activity {
         initRecorderAndroidTranker();
         initView();
 
-        DuduUser user=getUser("user10001","设备号"+10001); // 注意 userId 前面拼接 "user" 字符串   比如  uid=10001  那么 第一个参数  应该是  user10001; 设备号 是为了 让用户单点登录用的
+        DuduUser user=getUser("user10001","设备号"+Constants.SEPORATE+10001); // 注意 userId 前面拼接 "user" 字符串   比如  uid=10001  那么 第一个参数  应该是  user10001; 设备号 是为了 让用户单点登录用的
 //        DuduUser user=getUser("user10005","设备号"+10005);
         loginNSbyUid(user);
     }
