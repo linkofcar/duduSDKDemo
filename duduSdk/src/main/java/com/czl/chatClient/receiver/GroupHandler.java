@@ -22,6 +22,7 @@ public abstract class GroupHandler implements GroupLienster {
 	public final List<AppServerType> getServerType() {
 		// TODO Auto-generated method stub
 		return AppServerType.GroupValus();
+
 	}
 
 	@Override
