@@ -14,7 +14,6 @@ import java.util.List;
 
 public abstract class MultiAudioMixer {
     private  OnAudioMixListener mOnAudioMixListener;
-    private Speex speex;
 
     public static MultiAudioMixer createAudioMixer(){
         return new AverageAudioMixer();
@@ -25,7 +24,6 @@ public abstract class MultiAudioMixer {
     }
 
     public void mixAudios(List<byte[]> rawAudioFiles) throws  IOException{
-
         byte[] mixBytes = mixRawAudioBytes(rawAudioFiles);
         if(mixBytes != null && mOnAudioMixListener != null){
             mOnAudioMixListener.onMixing(mixBytes);

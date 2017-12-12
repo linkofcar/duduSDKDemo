@@ -32,7 +32,6 @@ public class DuduMixAudo {
     public DuduMixAudo(MultiAudioMixer.OnAudioMixListener mOnAudioMixListener,Speex speex) {
         mixer= MultiAudioMixer.createAudioMixer();
         mixer.setOnAudioMixListener(mOnAudioMixListener);
-        mixer.setSpeex(speex);
         this.mSpeex=speex;
     }
 
