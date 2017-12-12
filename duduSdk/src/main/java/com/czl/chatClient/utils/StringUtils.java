@@ -71,11 +71,21 @@ public class StringUtils {
 	 * @return
 	 */
 
-	public static String getFormatString(String queryKey,String oldkey,String newkey) {
+	private static String getFormatString(String queryKey,String oldkey,String newkey) {
 		if(isEmpty(queryKey)){
 			return queryKey;
 		}
 		return queryKey.replace(oldkey, newkey);
 	}
 
+	public static String formatString(String content) {
+		String formateString=getFormatString(content,Constants.MESSAFE_END_TAG,Constants.REPLACE_END_TAG);
+		return getFormatString(formateString,Constants.SEPORATE, Constants.REPLACE_SEPORATE_TAG);
+	}
+
+	public static String returnFormat(String datum) {
+		String formateString=StringUtils.getFormatString(datum,Constants.REPLACE_END_TAG,Constants.MESSAFE_END_TAG);
+
+		return StringUtils.getFormatString(formateString,Constants.REPLACE_SEPORATE_TAG, Constants.SEPORATE);
+	}
 }

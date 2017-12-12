@@ -242,19 +242,16 @@ public final class NettyMessage implements Serializable {
 		String[] data=getCtxUTF8String().split("\\|");
 		String[] newdata=new String[data.length];
 		for(int i=0;i<data.length;i++){
-			newdata[i]=getPartFormat(data[i]);
+			newdata[i]=returnFormat(data[i]);
 		}
 		return newdata;
 	}
 
 	public String getFormatString() {
-		String formate=StringUtils.getFormatString(getCtxUTF8String(),Constants.REPLACE_SEPORATE_TAG,Constants.SEPORATE);
-		return StringUtils.getFormatString(formate,Constants.REPLACE_END_TAG,Constants.MESSAFE_END_TAG);
+		return StringUtils.formatString(getCtxUTF8String());
 	}
 
-	private String getPartFormat(String datum) {
-		String formateString=StringUtils.getFormatString(datum,Constants.REPLACE_END_TAG,Constants.MESSAFE_END_TAG);
-
-		return StringUtils.getFormatString(formateString,Constants.REPLACE_SEPORATE_TAG, Constants.SEPORATE);
+	private String returnFormat(String datum) {
+		return StringUtils.returnFormat(datum);
 	}
 }

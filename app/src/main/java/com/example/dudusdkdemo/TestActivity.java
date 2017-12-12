@@ -38,8 +38,8 @@ public class TestActivity extends Activity {
     private int DEFAULT_SIZE=1024;
     private int  index=0;
     private Handler mHandler;
-    DuduUser user1=getUser("user10005","设备号"+10005);
-//        DuduUser user1=getUser("user10001","设备号"+10001);//上面是10005  下面就用10001  这样当10005 登录成功  主动给10005 发一条消息
+//    DuduUser user1=getUser("user10005","设备号"+10005);
+        DuduUser user1=getUser("user10001","设备号"+10001);//上面是10005  下面就用10001  这样当10005 登录成功  主动给10005 发一条消息
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,8 +48,8 @@ public class TestActivity extends Activity {
         initRecorderAndroidTranker();
         initView();
 
-        DuduUser user=getUser("user10001","设备号"+Constants.SEPORATE+10001); // 注意 userId 前面拼接 "user" 字符串   比如  uid=10001  那么 第一个参数  应该是  user10001; 设备号 是为了 让用户单点登录用的
-//        DuduUser user=getUser("user10005","设备号"+10005);
+//        DuduUser user=getUser("user10001","设备号"+Constants.SEPORATE+10001); // 注意 userId 前面拼接 "user" 字符串   比如  uid=10001  那么 第一个参数  应该是  user10001; 设备号 是为了 让用户单点登录用的
+        DuduUser user=getUser("user10005","设备号"+10005);
         loginNSbyUid(user);
     }
 
@@ -82,7 +82,7 @@ public class TestActivity extends Activity {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        DuduClient.getInstance().sendDuduMessage(user1,"第   "+index+"   测试消息");
+                        DuduClient.getInstance().sendDuduMessage(user1,"第   "+index+"  \n\n+||||| 测试消息");
                         // 保存离线消息  当 用户 {user1} 处于离线状态时  消息会保存 到数据库。。。 当它 上线时  onReceiveOfflineMessage(List<Pushmessage> lists) 方法 会被调用
 //                        DuduClient.getInstance().sendDuduMessage(user1,"第   "+index+"   测试消息",true);
                     }

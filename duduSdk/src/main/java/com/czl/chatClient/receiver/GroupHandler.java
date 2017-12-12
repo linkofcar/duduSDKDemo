@@ -29,7 +29,6 @@ public abstract class GroupHandler implements GroupLienster {
 	public final void onRecivMessage(Channel ctx, NettyMessage message,
 			String tag, JsonParser parser) {
 		// TODO Auto-generated method stub
-		// TODO Auto-generated method stub
 		try {
 			String[] splits = message.getFormatStrings();;
 			switch (AppServerType.ofCommand(message.getHeader())) {
