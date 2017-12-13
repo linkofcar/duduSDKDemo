@@ -42,4 +42,10 @@ public class Speex {
 	public native int encode(short lin[], int offset, byte encoded[], int size);
 
 	public native void close();
+
+	public native  void initDSP(int size,int rate,float level);
+
+	public native short[] preprocessDSP(short lin[],int linSize,short out[]);
+
+	public native void closeDSP();
 }
