@@ -211,8 +211,8 @@ public final class NettyMessage implements Serializable {
 	{
 		// TODO Auto-generated method stub
 		NettyContent content = getConobj();
-		String jsonStr = JSONObject.toJSONString(content);
-		return StringUtils.tobyte(jsonStr);
+		JsonString jsonStr=new JsonString( JSONObject.toJSONString(content));
+		return StringUtils.tobyte(jsonStr.getFinalMessage());
 	}
 	public void setConobj(byte[] nettyContent)
 	{
@@ -226,7 +226,6 @@ public final class NettyMessage implements Serializable {
 			String nettyCon = StringUtils.toString(nettyContent);
 			if (!StringUtils.isEmpty(nettyCon))
 			{
-				System.err.println(nettyCon);
 				conobj = JSONObject.parseObject(nettyCon, NettyContent.class);
 			}
 		}

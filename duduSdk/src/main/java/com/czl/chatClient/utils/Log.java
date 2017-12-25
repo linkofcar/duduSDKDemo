@@ -3,9 +3,11 @@ package com.czl.chatClient.utils;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
 
+import com.alibaba.fastjson.JSONObject;
 import com.czl.chatClient.AppServerType;
 import com.czl.chatClient.Constants;
 import com.czl.chatClient.DuduSDK;
+import com.czl.chatClient.bean.NettyContent;
 import com.czl.chatClient.bean.NettyMessage;
 
 public class Log
@@ -48,7 +50,15 @@ public class Log
             e.printStackTrace();
         }
     }
-    
+
+    private static String getConObj(NettyMessage msg) {
+        NettyContent content=msg.getConobj();
+        if(content!=null)
+        return JSONObject.toJSONString(msg.getConobj());
+        else
+            return "";
+    }
+
     public static void e(String tag, String msg)
     {
         if(StringUtils.isEmpty(tag)){

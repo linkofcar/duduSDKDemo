@@ -36,4 +36,7 @@ public class JsonString {
 	public String getMessage() {
 		return builder.toString();
 	}
+	public String getFinalMessage() {
+		return builder.append(Constants.MESSAFE_END_TAG).toString();
+	}
 }

@@ -1,36 +1,35 @@
 package com.czl.chatClient.audio;
 
+import android.util.Log;
+
+/**
+ * Created by Tong on 2017/8/8.
+ */
+
 public class Speex {
-	/*
-	 * quality 1 : 4kbps (very noticeable artifacts, usually intelligible) 2 :
-	 * 6kbps (very noticeable artifacts, good intelligibility) 4 : 8kbps
-	 * (noticeable artifacts sometimes) 6 : 11kpbs (artifacts usually only
-	 * noticeable with headphones) 8 : 15kbps (artifacts not usually noticeable)
-	 */
-	private static final int DEFAULT_COMPRESSION = 8;
 	static {
 		try {
+			Log.e("JNI", "Trying to load libspeex.so");
 			System.loadLibrary("Speex");
-		} catch (Throwable e) {
-			e.printStackTrace();
+		} catch (UnsatisfiedLinkError ule) {
+			Log.e("JNI", "WARNING:Gould not load libspeex.so");
 		}
 	}
 
+	/*
+     * quality 1 : 4kbps (very noticeable artifacts, usually intelligible) 2 :
+     * 6kbps (very noticeable artifacts, good intelligibility) 4 : 8kbps
+     * (noticeable artifacts sometimes) 6 : 11kpbs (artifacts usually only
+     * noticeable with headphones) 8 : 15kbps (artifacts not usually noticeable)
+     */
+	private static final int DEFAULT_COMPRESSION = 8;
+
 	public Speex() {
+
 	}
 
 	public void init() {
-		load();
 		open(DEFAULT_COMPRESSION);
-	}
-
-	private void load() {
-		try {
-			System.loadLibrary("Speex");
-		} catch (Throwable e) {
-			e.printStackTrace();
-		}
-
 	}
 
 	public native int open(int compression);
@@ -43,9 +42,10 @@ public class Speex {
 
 	public native void close();
 
-	public native  void initDSP(int size,int rate,float level);
+	public native int initSpeexAec(int frameSize, int filterLength, int
+			sampleRate);
 
-	public native short[] preprocessDSP(short lin[],int linSize,short out[]);
+	public native int speexAec(short[] record, short[] play, short[] aec);
 
-	public native void closeDSP();
+	public native int exitSpeexDsp();
 }

@@ -23,8 +23,8 @@ public abstract class MultiAudioMixer {
         this.mOnAudioMixListener = l;
     }
 
-    public void mixAudios(List<byte[]> rawAudioFiles) throws  IOException{
-        byte[] mixBytes = mixRawAudioBytes(rawAudioFiles);
+    public void mixAudios(List<short[]> rawAudioFiles) throws  IOException{
+        short[] mixBytes = mixRawAudioBytes(rawAudioFiles);
         if(mixBytes != null && mOnAudioMixListener != null){
             mOnAudioMixListener.onMixing(mixBytes);
         }
@@ -33,7 +33,7 @@ public abstract class MultiAudioMixer {
     }
 
 
-    abstract byte[] mixRawAudioBytes(List<byte[]> data);
+    abstract short[] mixRawAudioBytes(List<short[]> data);
 
     public interface OnAudioMixListener{
         /**
@@ -41,7 +41,7 @@ public abstract class MultiAudioMixer {
          * @param data
          * @throws AudioMixException
          */
-        void onMixing( byte[] data) throws IOException;
+        void onMixing( short[] data) throws IOException;
 
         void onMixError(int errorCode);
 
@@ -66,12 +66,12 @@ public abstract class MultiAudioMixer {
     private static class AverageAudioMixer extends MultiAudioMixer{
 
         @Override
-        byte[] mixRawAudioBytes(List<byte[]> bMulRoadAudioes) {
+        short[] mixRawAudioBytes(List<short[]> bMulRoadAudioes) {
 
             if (bMulRoadAudioes == null || bMulRoadAudioes.size() == 0)
                 return null;
 
-            byte[] realMixAudio = bMulRoadAudioes.get(0);
+            short[] realMixAudio = bMulRoadAudioes.get(0);
 
             if(bMulRoadAudioes.size() == 1)
                 return realMixAudio;

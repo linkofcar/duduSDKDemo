@@ -5,8 +5,14 @@ android {
     buildToolsVersion '26.0.2'
 
     defaultConfig {
-        minSdkVersion 8
+        minSdkVersion 18
         targetSdkVersion 22
+//        ndk {
+//            moduleName "Speex"
+//            abiFilters  "armeabi","armeabi-v7a","arm64-v8a","mips","mips64","x86","x86_64"//编译支持的平台
+//            cFlags '-std=c++11 -fexceptions -fpermissive'
+//            stl 'stlport_static'
+//        }
     }
 
     buildTypes {
@@ -14,10 +20,18 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
+
     }
+
+//    externalNativeBuild {
+//        ndkBuild {
+//            path file("src/main/cpp/Android.mk")
+//        }
+//    }
 }
 
 dependencies {
     compile files('libs/fastjson-1.2.2.jar')
     compile files('libs/netty-all-4.1.13.Final.jar')
+//    implementation 'org.webrtc:google-webrtc:1.0.+'
 }

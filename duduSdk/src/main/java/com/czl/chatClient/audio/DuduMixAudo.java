@@ -23,8 +23,8 @@ import java.util.Map;
  */
 
 public class DuduMixAudo {
-    private Map<String,List<byte[]>> map=new HashMap<String, List<byte[]>>();
-    private Map<String,List<byte[]>> timemap=new HashMap<String, List<byte[]>>();
+    private Map<String,List<short[]>> map=new HashMap<String, List<short[]>>();
+    private Map<String,List<short[]>> timemap=new HashMap<String, List<short[]>>();
     private boolean isplaying=false;
     MultiAudioMixer mixer;
     private Speex mSpeex;
@@ -52,7 +52,7 @@ public class DuduMixAudo {
             map.clear();
             while (timemap.size() > 0&&!isplaying) {
                 isplaying=true;
-                List<byte[]> list=convertByte(timemap);
+                List<short[]> list=BytesUtil.convertByte(timemap);
                 mixer.mixAudios(list);
                 timemap.clear();
             }
@@ -64,46 +64,26 @@ public class DuduMixAudo {
 
     private void readMapbyte(MultiAudioMixer mixer,List<NettyMessage> msgs) throws Exception {
         Log.e("DuduMixAudo",msgs.size()+"!@@@@@@@@@");
-        Map<String,List<byte[]>> bytesMap=new HashMap<String, List<byte[]>>();
+        Map<String,List<short[]>> bytesMap=new HashMap<String, List<short[]>>();
        for(NettyMessage msg:msgs){
-          List<byte[]> usersiglbytes= bytesMap.get(msg.getConobj().getFrom().getUserid());
+          List<short[]> usersiglbytes= bytesMap.get(msg.getConobj().getFrom().getUserid());
           if(usersiglbytes==null){
-            usersiglbytes=new LinkedList<byte[]>();
+            usersiglbytes=new LinkedList<short[]>();
             bytesMap.put(msg.getConobj().getFrom().getUserid(),usersiglbytes);
           }
-           usersiglbytes.add(msg.getContent());
+           usersiglbytes.add(BytesUtil.Bytes2Shorts(msg.getContent()));
        }
-        List<byte[]> allmixbytes=convertByte(map);
+        List<short[]> allmixbytes=BytesUtil.convertByte(map);
         mixer.mixAudios(allmixbytes);
     }
 
-    List<byte[]> convertByte(Map<String ,List<byte[]>> bytesMap) {
-        List<byte[]> allmixbytes=new ArrayList<byte[]>();
-        for(List<byte[]> userbytes:bytesMap.values()){
-            Log.e("DuduMixAudo",userbytes.size()+"!!");
-            int lengh=0;
-            for(byte[] bytes:userbytes){
-                lengh+=bytes.length;
-            }
-            byte[] result = new byte[lengh];
-            int offset=0;
-            for (byte[] array : userbytes) {
-                System.arraycopy(array, 0, result, offset, array.length);
-                offset += array.length;
-            }
-            Log.e("DuduMixAudo",result.length+"@@");
-            allmixbytes.add(result);
-        }
-        return  allmixbytes;
-    }
-
     public void auMessage(TimesData data) throws IOException{
-        byte[] bytes=decode(data);
+        short[] bytes=decode(data);
         String uid=data.getFromUser().getUserid();
         Log.e("DuduMixAudo",uid+"   key   "+uid);
-        List<byte[]> frombytes=map.get(uid);
+        List<short[]> frombytes=map.get(uid);
         if(frombytes==null){
-            frombytes=new LinkedList<byte[]>();
+            frombytes=new LinkedList<short[]>();
             map.put(uid,frombytes);
         }else {
             Log.e("DuduMixAudo",uid+"已有数据");
@@ -117,7 +97,7 @@ public class DuduMixAudo {
      * @return
      * @throws IOException
      */
-    private byte[] decode(TimesData data) throws IOException{
+    private short[] decode(TimesData data) throws IOException{
         List<ShortData> userbytes=new ArrayList<>();
         DataInputStream dis = new DataInputStream(
                 new BufferedInputStream(BytesUtil.byte2Input(data.getBytedata())));
@@ -149,6 +129,6 @@ public class DuduMixAudo {
             System.arraycopy(array.getmBuffer(), 0, result, offset, array.getmSize());
             offset += array.getmSize();
         }
-        return BytesUtil.Shorts2Bytes(result);
+        return result;
     }
 }

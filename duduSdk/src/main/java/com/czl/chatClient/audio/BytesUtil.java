@@ -1,10 +1,17 @@
 package com.czl.chatClient.audio;
 
+import android.util.Log;
+
+import com.czl.chatClient.Constants;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteOrder;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2017\12\9 0009.
@@ -87,7 +94,7 @@ public class BytesUtil {
         return buf;
     }
 
-    public short getShort(byte[] buf, boolean bBigEnding) {
+    public static short getShort(byte[] buf, boolean bBigEnding) {
         if (buf == null) {
             throw new IllegalArgumentException("byte array is null!");
         }
@@ -173,8 +180,8 @@ public class BytesUtil {
         return getInt(buf, this.testCPU());
     }
 
-    public short getShort(byte[] buf) {
-        return getShort(buf, this.testCPU());
+    public static short getShort(byte[] buf) {
+        return getShort(buf, testCPU());
     }
 
     public long getLong(byte[] buf) {
@@ -182,7 +189,7 @@ public class BytesUtil {
     }
 
     /****************************************/
-    public short[] Bytes2Shorts(byte[] buf) {
+    public  static short[] Bytes2Shorts(byte[] buf) {
         byte bLength = 2;
         short[] s = new short[buf.length / bLength];
         for (int iLoop = 0; iLoop < s.length; iLoop++) {
@@ -205,6 +212,52 @@ public class BytesUtil {
             }
         }
         return buf;
+    }
+
+
+    public static List<short[]> convertByte(Map<String ,List<short[]>> bytesMap) {
+        List<short[]> allmixbytes=new ArrayList<short[]>();
+        for(List<short[]> userbytes:bytesMap.values()){
+            int lengh=0;
+            for(short[] bytes:userbytes){
+                lengh+=bytes.length;
+            }
+            short[] result = new short[lengh];
+            int offset=0;
+            for (short[] array : userbytes) {
+                System.arraycopy(array, 0, result, offset, array.length);
+                offset += array.length;
+            }
+            allmixbytes.add(result);
+        }
+        return  allmixbytes;
+    }
+
+
+    public static byte[] convertByte(List<byte[]>  userbytes) {
+        int lengh=0;
+        for(byte[] bytes:userbytes){
+            lengh+=bytes.length;
+        }
+        byte[] result = new byte[lengh];
+        int offset=0;
+        for (byte[] array : userbytes) {
+            System.arraycopy(array, 0, result, offset, array.length);
+            offset += array.length;
+        }
+        Log.e("DuduMixAudo",result.length+"@@");
+        return result;
+    }
+    public static List<byte[]> convertByte(byte[] bytes,int times) {
+        List<byte[]> list=new ArrayList<>();
+        int lengh=bytes.length/ times;
+        int offset=0;
+        for(int i=0;i<times;i++){
+            byte[] timebyte=new byte[lengh];
+            System.arraycopy(bytes,offset,timebyte,0,timebyte.length);
+            list.add(timebyte);
+        }
+        return list;
     }
 
     /****************************************/
@@ -259,5 +312,23 @@ public class BytesUtil {
             }
         }
         return buf;
+    }
+
+
+    public static byte[] convertShortDataByte(List<ShortData> list) {
+        if(list==null){
+            return  null;
+        }
+        int lengh=0;
+        for(ShortData data:list){
+            lengh+=data.getmSize();
+        }
+        byte[] result=new byte[lengh];
+        int offset=0;
+        for (ShortData data:list) {
+            System.arraycopy(data.getByteBuffer(), 0, result, offset, data.getmSize());
+            offset += data.getmSize();
+        }
+        return  result;
     }
 }
