@@ -51,6 +51,7 @@ public class PCMTranker implements Runnable {
                 .ENCODING_PCM_16BIT, playBuff, AudioTrack.MODE_STREAM);
         short[] rawData;
         byte[] speexEncode;
+        int index=1;
         while (isRunning) {
             if (FramDataManager.get().canRead()) {
                 speexEncode = FramDataManager.get().getSpeexData();
@@ -63,6 +64,16 @@ public class PCMTranker implements Runnable {
                         audioTrack.play();
                     }
                 }
+            }else {
+                try {
+                    Thread.sleep(500*index);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                if(index>=6){
+                    isRunning=false;
+                }
+                index++;
             }
         }
         FramDataManager.get().clear();

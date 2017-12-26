@@ -3,6 +3,7 @@ package com.example.dudusdkdemo;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 
@@ -109,7 +110,6 @@ public class SpeexMainActivity extends Activity implements MultiAudioMixer.OnAud
 
 					@Override
 					public void onReciveAudioMessage(DuduUser duduUser, byte[] bytes, String s) {
-//						List<Integer> list=JSONObject.parseArray(s,Integer.class);
 						int offset = 0;
 						for (int i = 0; i < Constants.SEND_TIMES; i++) {
 							byte[] timebyte = new byte[bytes.length / Constants.SEND_TIMES];
@@ -179,22 +179,36 @@ public class SpeexMainActivity extends Activity implements MultiAudioMixer.OnAud
 		private byte[] mBuffer;
 	}
 	private void registerListener() {
-		mStart.setOnClickListener(new View.OnClickListener() {
-
+//		mStart.setOnClickListener(new View.OnClickListener() {
+//
+//			@Override
+//			public void onClick(View v) {
+//						PCMRecorder.get().startRecord();
+//			}
+//		});
+		mStart.setOnTouchListener(new View.OnTouchListener() {
 			@Override
-			public void onClick(View v) {
+			public boolean onTouch(View view, MotionEvent motionEvent) {
+				switch (motionEvent.getAction()){
+					case MotionEvent.ACTION_DOWN:
 						PCMRecorder.get().startRecord();
+						break;
+					case MotionEvent.ACTION_CANCEL:
+					case MotionEvent.ACTION_UP:
+						PCMRecorder.get().stopRecord();
+						break;
+				}
+				return false;
 			}
 		});
 
-		mStop.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				PCMRecorder.get().stopRecord();
-				PCMTranker.get().stopPlay();
-			}
-		});
-
+//		mStop.setOnClickListener(new View.OnClickListener() {
+//
+//			@Override
+//			public void onClick(View v) {
+//				PCMRecorder.get().stopRecord();
+//				PCMTranker.get().stopPlay();
+//			}
+//		});
 	}
 }
