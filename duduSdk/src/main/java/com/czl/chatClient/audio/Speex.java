@@ -2,6 +2,8 @@ package com.czl.chatClient.audio;
 
 import android.util.Log;
 
+import com.czl.chatClient.audio.recorder.FramDataManager;
+
 /**
  * Created by Tong on 2017/8/8.
  */
@@ -23,9 +25,14 @@ public class Speex {
      * noticeable with headphones) 8 : 15kbps (artifacts not usually noticeable)
      */
 	private static final int DEFAULT_COMPRESSION = 8;
+	private static Speex instance = new Speex();
+
+	public static Speex get() {
+		return instance;
+	}
 
 	public Speex() {
-
+		init();
 	}
 
 	public void init() {

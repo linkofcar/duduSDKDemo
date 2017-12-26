@@ -1,4 +1,4 @@
-package com.czl.chatClient.recorder;
+package com.czl.chatClient.audio.recorder;
 
 import android.media.AudioFormat;
 import android.media.AudioRecord;
@@ -6,6 +6,8 @@ import android.media.MediaRecorder;
 
 import com.czl.chatClient.Constants;
 import com.czl.chatClient.DuduClient;
+import com.czl.chatClient.audio.Codec.DuduCodecServer;
+import com.czl.chatClient.audio.Codec.SampleSpeexAudioCoder;
 import com.czl.chatClient.audio.Speex;
 import com.czl.chatClient.bean.DuduUser;
 import com.czl.chatClient.utils.Log;
@@ -19,9 +21,10 @@ import java.util.List;
 
 public class PCMRecorder implements Runnable {
     private List<DuduUser> toUsers;
+    private DuduCodecServer codecServer;
 
     private PCMRecorder() {
-
+        codecServer=new SampleSpeexAudioCoder();
     }
 
     private static PCMRecorder instance = new PCMRecorder();
@@ -44,8 +47,6 @@ public class PCMRecorder implements Runnable {
         isRunning = false;
     }
 
-    private Speex speex = new Speex();
-
 
     @Override
     public void run() {
@@ -57,66 +58,24 @@ public class PCMRecorder implements Runnable {
         audioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC,
                 Constants.SAMPLERATEINHZ, AudioFormat.CHANNEL_IN_MONO,
                 AudioFormat.ENCODING_PCM_16BIT, recordBuff);
-
-        speex.init();
-        speex.initSpeexAec(speex.getFrameSize(), speex.getFrameSize()*25, Constants.SAMPLERATEINHZ);
-
+        codecServer.init(Constants.SAMPLERATEINHZ);
         short[] rawData = new short[Constants.RAW_PACKAGE_SIZE];
-        short[] echoCancelData = new short[Constants.RAW_PACKAGE_SIZE];
-        byte[] speexEncode = new byte[Constants.RAW_PACKAGE_SIZE];
         audioRecord.startRecording();
-        int iSize=0;
-        OutData datas=null;
         byte[] outbuffer=null;
-        List<Integer> list=new ArrayList<>();
         while (isRunning) {
             audioRecord.read(rawData, 0, Constants.RAW_PACKAGE_SIZE);
-            if (FramDataManager.get().getEchoData() != null) {
-                speex.speexAec(rawData, FramDataManager.get().getEchoData(),
-                        echoCancelData);
-//                datas=encodeByte(echoCancelData,speexEncode);
-                iSize=speex.encode(rawData, 0, speexEncode, 0);
-//                FramDataManager.get().addSpeexData(speexEncode, iSize);
+            short[] play=FramDataManager.get().getEchoData();
+            if (play!= null) {
+                outbuffer  =  codecServer.AECCancelEncode(rawData,play,Constants.RAW_PACKAGE_SIZE);
             } else {
-                iSize=speex.encode(rawData, 0, speexEncode, 0);
-//                datas=encodeByte(echoCancelData,speexEncode);
-//                FramDataManager.get().addSpeexData(speexEncode, iSize);
+                outbuffer  =  codecServer.encode(rawData,Constants.RAW_PACKAGE_SIZE);
             }
-            list.add(iSize);
-            outbuffer=new byte[iSize];
-            System.arraycopy(speexEncode, 0, outbuffer, 0, iSize);
             DuduClient.getInstance().sendAudoiByte(toUsers, outbuffer, "@#!");
         }
         audioRecord.stop();
         audioRecord.release();
         audioRecord = null;
-        speex.exitSpeexDsp();
-    }
-
-    private OutData encodeByte(short[] echoCancelData, byte[] speexEncode) {
-        int frame=speex.getFrameSize();
-        int nsamples = (echoCancelData.length - 1) /frame  + 1;
-        int iSize=0;
-        Log.e("TIMES_"+nsamples);
-        List<Integer> list=new ArrayList<>();
-        for(int i=0;i<nsamples;i++){
-            short[] dst=new short[Constants.RAW_PACKAGE_SIZE];
-            byte[] dstencode=new byte[Constants.RAW_PACKAGE_SIZE];
-            System.arraycopy(echoCancelData, i*frame, dst, 0, Constants.RAW_PACKAGE_SIZE);
-            int size=speex.encode(dst, 0, dstencode, 0);
-            System.arraycopy(dstencode, 0, speexEncode, iSize, size);
-            list.add(size);
-            iSize+=size;
-        }
-        byte[]  buffer =new byte[iSize];
-        System.arraycopy(speexEncode, 0, buffer, 0, iSize);
-        for(byte b:buffer){
-            Log.e(b+"@@@@@@");
-        }
-        OutData data=new OutData();
-        data.setSizeList(list);
-        data.setBuffer(buffer);
-       return data;
+        codecServer.destory();
     }
 
     public class OutData{

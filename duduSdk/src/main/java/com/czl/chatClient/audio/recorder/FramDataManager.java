@@ -1,4 +1,4 @@
-package com.czl.chatClient.recorder;
+package com.czl.chatClient.audio.recorder;
 
 import com.czl.chatClient.utils.Log;
 

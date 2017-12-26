@@ -18,9 +18,9 @@ import com.czl.chatClient.bean.Pushmessage;
 import com.czl.chatClient.bean.Responbean;
 import com.czl.chatClient.login.onConnetCallBack;
 import com.czl.chatClient.receiver.ZVAHandler;
-import com.czl.chatClient.recorder.PCMRecorder;
-import com.czl.chatClient.recorder.PCMTranker;
-import com.czl.chatClient.recorder.FramDataManager;
+import com.czl.chatClient.audio.recorder.PCMRecorder;
+import com.czl.chatClient.audio.recorder.PCMTranker;
+import com.czl.chatClient.audio.recorder.FramDataManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,16 +37,16 @@ public class SpeexMainActivity extends Activity implements MultiAudioMixer.OnAud
 
 
 	private Speex speex;
-//	    DuduUser user1=getUser("user10005","设备号"+10005);
-	DuduUser user1=getUser("user10001","设备号"+10001);//上面是10005  下面就用10001  这样当10005 登录成功  主动给10005 发一条消息
+	    DuduUser user1=getUser("user10005","设备号"+10005);
+//	DuduUser user1=getUser("user10001","设备号"+10001);//上面是10005  下面就用10001  这样当10005 登录成功  主动给10005 发一条消息
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 //        DuduUser user=getUser("user10207","设备号"+10207); // 注意 userId 前面拼接 "user" 字符串   比如  uid=10001  那么 第一个参数  应该是  user10001; 设备号 是为了 让用户单点登录用的
-		DuduUser user=getUser("user10005","设备号"+10005);
-//		DuduUser user=getUser("user10001","设备号"+10001);
+//		DuduUser user=getUser("user10005","设备号"+10005);
+		DuduUser user=getUser("user10001","设备号"+10001);
 		loginNSbyUid(user);
 		init();
 		registerListener();

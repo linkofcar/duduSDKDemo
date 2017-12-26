@@ -2,13 +2,11 @@ package com.czl.chatClient.audio;
 
 import android.util.Log;
 
-import com.czl.chatClient.AppServerType;
-import com.czl.chatClient.bean.DuduUser;
 import com.czl.chatClient.bean.NettyMessage;
+import com.czl.chatClient.utils.BytesUtil;
 
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -52,7 +50,7 @@ public class DuduMixAudo {
             map.clear();
             while (timemap.size() > 0&&!isplaying) {
                 isplaying=true;
-                List<short[]> list=BytesUtil.convertByte(timemap);
+                List<short[]> list= BytesUtil.convertByte(timemap);
                 mixer.mixAudios(list);
                 timemap.clear();
             }

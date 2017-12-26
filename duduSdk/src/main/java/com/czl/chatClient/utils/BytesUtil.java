@@ -1,8 +1,9 @@
-package com.czl.chatClient.audio;
+package com.czl.chatClient.utils;
 
 import android.util.Log;
 
 import com.czl.chatClient.Constants;
+import com.czl.chatClient.audio.ShortData;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
