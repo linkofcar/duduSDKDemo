@@ -1,10 +1,11 @@
-package com.czl.chatClient.audio.Codec;
+package com.czl.chatClient.audio.codec;
 
 import com.czl.chatClient.audio.Speex;
 import com.czl.chatClient.utils.Log;
 
 /**
- * Created by Administrator on 2017/12/26.
+ * {@link DuduCodecServer}
+ * Speex  音频 处理 实现类。
  */
 
 public class SampleSpeexAudioCoder implements DuduCodecServer{
@@ -32,14 +33,19 @@ public class SampleSpeexAudioCoder implements DuduCodecServer{
     }
 
     @Override
-    public byte[] AECCancelEncode(short[] rec, short[] play,int frameSize) {
+    public short[] AECCanceler(short[] rec, short[] play, int frameSize) {
         if(!isInitAEC){
             Log.e("编码器 未初始化");
             return  null;
         }
         short[] echoCancelData = new short[frameSize];
         Speex.get().speexAec(rec,play, echoCancelData);
-        return encode(echoCancelData,frameSize);
+        return echoCancelData;
+    }
+
+    @Override
+    public byte[] AECCancelEncode(short[] rec, short[] play,int frameSize) {
+        return encode(AECCanceler(rec,play,frameSize),frameSize);
     }
 
     @Override

@@ -38,16 +38,17 @@ public class SpeexMainActivity extends Activity implements MultiAudioMixer.OnAud
 
 
 	private Speex speex;
-	    DuduUser user1=getUser("user10005","设备号"+10005);
+//	    DuduUser user1=getUser("user10005","设备号"+10005);
 //	DuduUser user1=getUser("user10001","设备号"+10001);//上面是10005  下面就用10001  这样当10005 登录成功  主动给10005 发一条消息
+	DuduUser user1=getUser("user10030","设备号"+10030);//上面是10005  下面就用10001  这样当10005 登录成功  主动给10005 发一条消息
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 //        DuduUser user=getUser("user10207","设备号"+10207); // 注意 userId 前面拼接 "user" 字符串   比如  uid=10001  那么 第一个参数  应该是  user10001; 设备号 是为了 让用户单点登录用的
-//		DuduUser user=getUser("user10005","设备号"+10005);
-		DuduUser user=getUser("user10001","设备号"+10001);
+		DuduUser user=getUser("user10005","设备号"+10005);
+//		DuduUser user=getUser("user10001","设备号"+10001);
 		loginNSbyUid(user);
 		init();
 		registerListener();
@@ -110,14 +111,8 @@ public class SpeexMainActivity extends Activity implements MultiAudioMixer.OnAud
 
 					@Override
 					public void onReciveAudioMessage(DuduUser duduUser, byte[] bytes, String s) {
-						int offset = 0;
-						for (int i = 0; i < Constants.SEND_TIMES; i++) {
-							byte[] timebyte = new byte[bytes.length / Constants.SEND_TIMES];
-							System.arraycopy(bytes, offset, timebyte, 0, i);
-							FramDataManager.get().addSpeexData(bytes, bytes.length);
-							offset += i;
-						}
-						PCMTranker.get().startPlay();
+						com.czl.chatClient.utils.Log.e("接收到的大小"+bytes.length);
+						audioPlay(bytes);
 					}
 
 					@Override
@@ -146,6 +141,17 @@ public class SpeexMainActivity extends Activity implements MultiAudioMixer.OnAud
 			}
 		});
 		return null;
+	}
+
+	private void audioPlay(byte[] bytes) {
+		int offset = 0;
+		for (int i = 0; i < Constants.SEND_TIMES; i++) {
+			byte[] timebyte = new byte[bytes.length / Constants.SEND_TIMES];
+			System.arraycopy(bytes, offset, timebyte, 0, timebyte.length);
+			FramDataManager.get().addSpeexData(timebyte, timebyte.length);
+			offset += timebyte.length;
+		}
+		PCMTranker.get().startPlay();
 	}
 
 
@@ -198,7 +204,7 @@ public class SpeexMainActivity extends Activity implements MultiAudioMixer.OnAud
 						PCMRecorder.get().stopRecord();
 						break;
 				}
-				return false;
+				return true;
 			}
 		});
 

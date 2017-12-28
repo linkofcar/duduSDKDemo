@@ -5,8 +5,8 @@ import android.media.AudioManager;
 import android.media.AudioTrack;
 
 import com.czl.chatClient.Constants;
-import com.czl.chatClient.audio.Codec.DuduCodecServer;
-import com.czl.chatClient.audio.Codec.SampleSpeexAudioCoder;
+import com.czl.chatClient.audio.codec.DuduCodecServer;
+import com.czl.chatClient.audio.codec.SampleSpeexAudioCoder;
 import com.czl.chatClient.utils.Log;
 
 /**

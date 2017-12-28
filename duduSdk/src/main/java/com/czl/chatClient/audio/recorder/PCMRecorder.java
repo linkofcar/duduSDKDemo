@@ -6,9 +6,8 @@ import android.media.MediaRecorder;
 
 import com.czl.chatClient.Constants;
 import com.czl.chatClient.DuduClient;
-import com.czl.chatClient.audio.Codec.DuduCodecServer;
-import com.czl.chatClient.audio.Codec.SampleSpeexAudioCoder;
-import com.czl.chatClient.audio.Speex;
+import com.czl.chatClient.audio.codec.DuduCodecServer;
+import com.czl.chatClient.audio.codec.SampleSpeexAudioCoder;
 import com.czl.chatClient.bean.DuduUser;
 import com.czl.chatClient.utils.Log;
 
@@ -62,6 +61,7 @@ public class PCMRecorder implements Runnable {
         short[] rawData = new short[Constants.RAW_PACKAGE_SIZE];
         audioRecord.startRecording();
         byte[] outbuffer=null;
+         List<byte[]> list=new ArrayList<>();
         while (isRunning) {
             audioRecord.read(rawData, 0, Constants.RAW_PACKAGE_SIZE);
             short[] play=FramDataManager.get().getEchoData();
@@ -70,35 +70,28 @@ public class PCMRecorder implements Runnable {
             } else {
                 outbuffer  =  codecServer.encode(rawData,Constants.RAW_PACKAGE_SIZE);
             }
-            DuduClient.getInstance().sendAudoiByte(toUsers, outbuffer, "@#!");
+            list.add(outbuffer);
+            if(list.size()==Constants.SEND_TIMES){
+                int alllength=0;
+                for(int i=0;i<list.size();i++){
+                    alllength+=list.get(i).length;
+                }
+                byte[] timesbuffer=new byte[alllength];
+                int offset=0;
+                for(int i=0;i<list.size();i++){
+                    System.arraycopy(list.get(i),0,timesbuffer,offset,list.get(i).length);
+                    offset+=list.get(i).length;
+                }
+                DuduClient.getInstance().sendAudoiByte(toUsers, timesbuffer, "@#!");
+//                audioPlay(timesbuffer,Constants.SEND_TIMES);
+                list.clear();
+            }
         }
         audioRecord.stop();
         audioRecord.release();
         audioRecord = null;
         codecServer.destory();
     }
-
-    public class OutData{
-        private byte[] buffer;
-        private List<Integer> sizeList;
-
-        public byte[] getBuffer() {
-            return buffer;
-        }
-
-        public void setBuffer(byte[] buffer) {
-            this.buffer = buffer;
-        }
-
-        public List<Integer> getSizeList() {
-            return sizeList;
-        }
-
-        public void setSizeList(List<Integer> sizeList) {
-            this.sizeList = sizeList;
-        }
-    }
-
     public List<DuduUser> getToUser() {
         return toUsers;
     }
@@ -107,6 +100,22 @@ public class PCMRecorder implements Runnable {
       List<DuduUser> toUsers=new ArrayList<>();
        toUsers.add(toUser);
        setToUser(toUsers);
+    }
+
+    private void audioPlay(byte[] bytes,int times) {
+        int offset = 0;
+        for (int i = 0; i < times; i++) {
+            byte[] timebyte = new byte[bytes.length / times];
+            System.arraycopy(bytes, offset, timebyte, 0, timebyte.length);
+            FramDataManager.get().addSpeexData(timebyte, timebyte.length);
+            offset += timebyte.length;
+//            try {
+//                Thread.sleep(5);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+        }
+        PCMTranker.get().startPlay();
     }
 
     public void setToUser(List<DuduUser> toUsers) {
